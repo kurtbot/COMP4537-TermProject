@@ -28,7 +28,7 @@ const db = mysql.createConnection({ // pass in connection options
     host : 'localhost',
     user : 'root',
     password : '',
-    database : 'quotes'
+    database : 'termproject-ships'
 });
 
 // ====================================
