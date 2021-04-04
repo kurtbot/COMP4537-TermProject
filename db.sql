@@ -30,3 +30,10 @@ create table if not exists `leaderboards` (
     `rank` int(1) PRIMARY KEY AUTO_INCREMENT,
     `userId` int(11) not null
 );
+
+create table if not exists `queries` (
+    `uri` varchar(100) not null,
+    `type` varchar(100) not null,
+    `stat` int(11) not null,
+    PRIMARY Key (uri, type)
+);

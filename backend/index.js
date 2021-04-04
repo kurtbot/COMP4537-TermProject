@@ -25,10 +25,10 @@ const endPointRoot = '';
 
 const mysql = require('mysql');
 const db = mysql.createConnection({ // pass in connection options
-    host : 'localhost',
-    user : 'root',
-    password : '',
-    database : 'battleships'
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'battleships'
 });
 
 /**
@@ -42,39 +42,67 @@ const db = mysql.createConnection({ // pass in connection options
 // EXPRESS EVENTS
 // ====================================
 
-app.get('/user', (req, res) => {
-
-    let query = `select * from users;`;
-
+app.get(endPointRoot + '/queries', (req, res) => {
+    let query = `select * from queries;`
     db.query(query, (err, result) => {
-        if(err) throw err;
-        // res.send() // usually sends a string data
-        // res.json() // sends a json data
+        if (err) throw err;
         res.json(result);
     });
 });
 
-app.post('/user', (req, res) => {
+app.get(endPointRoot + '/user', (req, res) => {
+    let query;
+    new Promise((resolve, reject) => {
+        query = 'insert into queries (uri, type, `stat`) values ("/user", "get", 1) on duplicate key update `stat` = `stat` + 1;';
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            resolve('');
+        })
+    }).then((resp) => {
+        query = `select * from users;`
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            res.json(result);
+        });
+    })
+});
 
-    let username = req.body.username;
-    let password = req.body.password;
-
-    let query = `insert into users (username, password, elo) values ("${username}", "${password}", 0);`;
-
-    let ret = {};
-    db.query(query, (err, result) => {
-
-        ret['insertId'] = result.insertId;
-        ret['elo'] = 0;
-        res.json(ret);
+app.post(endPointRoot + '/user', (req, res) => {
+    let query;
+    new Promise((resolve, reject) => {
+        query = 'insert into queries (uri, type, `stat`) values ("/user", "post", 1) on duplicate key update `stat` = `stat` + 1;';
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            resolve('');
+        });
+    }).then((resp) => {
+        let username = req.body.username;
+        let password = req.body.password;
+        query = `insert into users (username, password, elo) values ("${username}", "${password}", 0);`;
+        let ret = {};
+        db.query(query, (err, result) => {
+            ret['insertId'] = result.insertId;
+            ret['elo'] = 0;
+            res.json(ret);
+        });
     });
 });
 
-app.put('/user', (req, res) => {
+app.put(endPointRoot + '/user', (req, res) => {
+    let query;
+    query = 'insert into queries (uri, type, `stat`) values ("/user", "put", 1) on duplicate key update `stat` = `stat` + 1;';
+    db.query(query, (err, result) => {
+        if (err) throw err;
+    })
     res.send('');
 });
 
-app.delete('/user', (req, res) => {
+app.delete(endPointRoot + '/user', (req, res) => {
+    let query;
+    query = 'insert into queries (uri, type, `stat`) values ("/user", "delete", 1) on duplicate key update `stat` = `stat` + 1;';
+    db.query(query, (err, result) => {
+        if (err) throw err;
+    })
     res.send('');
 });
 
