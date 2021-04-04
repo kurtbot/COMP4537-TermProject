@@ -105,3 +105,5 @@ dist
 
 # Nodejs in backend
 backend/node_modules/
+
+.docx
