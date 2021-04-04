@@ -28,56 +28,55 @@ const db = mysql.createConnection({ // pass in connection options
     host : 'localhost',
     user : 'root',
     password : '',
-    database : 'termproject-ships'
+    database : 'battleships'
 });
+
+/**
+ * user for main server
+ * user: "kmilanca_user1",
+ * password: "ISFd?xp}ZbUK",
+ * database : 'kmilanca_termproject-ships'
+ */
 
 // ====================================
 // EXPRESS EVENTS
 // ====================================
 
-/**
- * req - usually the client
- * res - server sending something to client
- */
+app.get('/user', (req, res) => {
 
-app.get('/trigger', (req, res) => {
-    
-    let sqlCmd = 'select * from quotes';
+    let query = `select * from users;`;
 
-    // do sql command in the database query
-    db.query(sqlCmd, (err, result) => {
-        if(err) throw err;
-        // res.send() // usually sends a string data
-        // res.json() // sends a json data
-        // res.json(result);
-        res.send(result);
-    })
-
-});
-
-app.post('/trigger', (req, res) => {
-    // let quoteBody = req.body['quote_body']
-    let quoteBody = req.body.quote_body;
-    let quoteSource = req.body.quote_source;
-
-    // let sqlCmd = 'insert into quotes (quote_body, quote_source) values ("' + quoteBody + '","' + quoteSource + '");' ;
-
-    // could use this format too that way we don't have to worry about "+" signs
-    let sqlCmd2 = `insert into quotes (quote_body, quote_source) values ("${quoteBody}", "${quoteSource}");`;
-
-
-    // `insert into table (value) values (value1), (value2), (value3); `
-
-    // do sql command in the database query
-    db.query(sqlCmd2, (err, result) => {
+    db.query(query, (err, result) => {
         if(err) throw err;
         // res.send() // usually sends a string data
         // res.json() // sends a json data
         res.json(result);
-    })
-
+    });
 });
 
+app.post('/user', (req, res) => {
+
+    let username = req.body.username;
+    let password = req.body.password;
+
+    let query = `insert into users (username, password, elo) values ("${username}", "${password}", 0);`;
+
+    let ret = {};
+    db.query(query, (err, result) => {
+
+        ret['insertId'] = result.insertId;
+        ret['elo'] = 0;
+        res.json(ret);
+    });
+});
+
+app.put('/user', (req, res) => {
+    res.send('');
+});
+
+app.delete('/user', (req, res) => {
+    res.send('');
+});
 
 // ====================================
 // LISTEN FOR CLIENTS

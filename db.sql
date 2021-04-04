@@ -2,7 +2,7 @@ create table if not exists `users` (
     `userId` int(11) PRIMARY KEY AUTO_INCREMENT,
     `username` varchar(20) not null,
     `password` varchar(30) not null,
-    `elo` int(11) not null
+    `elo` int(11) default 0
 );
 
 create table if not exists `admin` (
@@ -30,5 +30,3 @@ create table if not exists `leaderboards` (
     `rank` int(1) PRIMARY KEY AUTO_INCREMENT,
     `userId` int(11) not null
 );
-
-
