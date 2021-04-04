@@ -1,0 +1,9 @@
+.users_table {
+    margin: 0 auto;
+}
+
+#add_btn {
+    margin-top: 1.5em;
+    background: #68bb59;
+    color:#ffffff;
+}
