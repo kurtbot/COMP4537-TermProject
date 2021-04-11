@@ -64,7 +64,7 @@ app.get(endPointRoot + '/user', (req, res) => {
             if (err) throw err;
             res.json(result);
         });
-    })
+    });
 });
 
 app.post(endPointRoot + '/user', (req, res) => {
@@ -114,3 +114,25 @@ const port = process.env.PORT || 8888;
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 })
+
+// ====================================
+// SOCKET IO
+// ====================================
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+io.on('connection', (socket) => {
+    socket.on('join game', msg => {
+        console.log('join game');
+    });
+
+    socket.on('disconnect', msg => {
+        console.log('disconnect');
+    })
+})
+
+// both clients connect sending their username which are unique to the server
+// client needs to know who their opponent is so the client can provide
+// the data for the server's other target client]
+// 

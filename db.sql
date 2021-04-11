@@ -1,8 +1,11 @@
 create table if not exists `users` (
-    `userId` int(11) PRIMARY KEY AUTO_INCREMENT,
+    `userId` varchar(11) PRIMARY KEY not null,
+    `email` varchar(40) not null,
     `username` varchar(20) not null,
     `password` varchar(30) not null,
-    `elo` int(11) default 0
+    `win` int(11) default 0,
+    `lose` int(11) default 0,
+    `draw` int(11) default 0
 );
 
 create table if not exists `admin` (
