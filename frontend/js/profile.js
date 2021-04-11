@@ -101,6 +101,8 @@ function readAllUsers(users) {
         let username = user.username;
         let elo = user.elo;
 
+    if (uid != sessionStorage.getItem('TTTuserId')){
+
         let row1 = document.createElement("tr");
         let usernameTD = document.createElement("td");
         let winsTD = document.createElement("td");
@@ -134,28 +136,25 @@ function readAllUsers(users) {
         row1.appendChild(drawsTD);
         row1.appendChild(rankTD);
 
-        if (uid != sessionStorage.getItem('TTTuserId')) {
-            // edit button
-            editButton.innerHTML = "Edit";
-            editButton.className = "btn";
-            editButton.addEventListener('click', function(e){
-                let id = e.currentTarget.userId;
-                console.log(id);
-            })
-            // delete button
-            delButton.innerHTML = "Delete";
-            delButton.className = "btn";
+        // edit button
+        editButton.innerHTML = "Edit";
+        editButton.className = "btn";
+        editButton.addEventListener('click', function(e){
+            let id = e.currentTarget.userId;
+            console.log(id);
+        })
+        // delete button
+        delButton.innerHTML = "Delete";
+        delButton.className = "btn";
 
-            row1.appendChild(editButton);
-            row1.appendChild(delButton);
-        } else {
-            row1.appendChild(document.createElement('td'));
-        }
-
+        row1.appendChild(editButton);
+        row1.appendChild(delButton);
+        
         table.appendChild(row1);
-
+        
         div.appendChild(h2);
         div.appendChild(table);
+        }
     });
     row0.appendChild(thU);
     row0.appendChild(thW);
