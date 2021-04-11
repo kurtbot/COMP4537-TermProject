@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = "stylesheet" href = "./css/global.css">
+    <link rel = "stylesheet" href = "./css/profile.css">
+    <title>Profile</title>
+</head>
+<body>
+    <h2>User</h2>
+    <div id = "my_profile">
+        <div class = "users_table">
+            <table id = "userProfile">
+                <tr>
+                    <th>Wins</th>
+                    <th>Losses</th>
+                    <th>Draws</th>
+                    <th>elo</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <br/>
+
+    <!-- Only show this information if logged in as an admin -->
+    <h2>All Users</h2>
+    <div class = "users_table">
+        <table id = "userList">
+            <tr>
+                <th>Username</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Draws</th>
+                <th>elo</th>
+            </tr>
+        </table>
+    </div>
+    <br/>
+
+    <a class="btn" href="./index.html">Back</a>
+
+    <script src = "js/profile.js"></script>
+</body>
+</html>
