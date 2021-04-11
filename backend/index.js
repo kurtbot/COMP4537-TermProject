@@ -62,8 +62,9 @@ function queryIncrement(uri, type) {
 // ====================================
 
 // [GET]
+// Gets admin stats
 app.get(endPointRoot + '/queries', (req, res) => {
-    let query = `select * from queries;`
+    let query = `select * from queries order by type asc;`
     db.query(query, (err, result) => {
         if (err) throw err;
         res.json(result);
@@ -168,14 +169,16 @@ app.post(endPointRoot + '/match', (req, res) => {
 });
 
 // [PUT]
+// Updates a user
 app.put(endPointRoot + '/user', (req, res) => {
     let query;
     console.log(req.body);
     let userId = req.body.userId;
     let username = req.body.username;
     let password = req.body.password;
+    let isAdmin = req.body.isAdmin;
     queryIncrement(endPointRoot + '/user', 'put').then((resp) => {
-        query = `UPDATE users SET username = "${username}", password = "${password}" WHERE userId = ${userId};`;
+        query = `UPDATE users SET username = "${username}", password = "${password}", isAdmin = "${isAdmin}" WHERE userId = ${userId};`;
         db.query(query, (err, result) => {
             if (err) throw err;
         })

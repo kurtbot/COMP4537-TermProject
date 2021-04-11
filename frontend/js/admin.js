@@ -32,7 +32,7 @@ function read(stat) {
     let countTD = document.createElement("td");
     
     // method
-    methodTD.innerHTML = method.toUpperCase();
+    methodTD.innerHTML = method.toUpperCase().bold();
 
     // endpoint
     endpointTD.innerHTML = endpointRoot + uri;

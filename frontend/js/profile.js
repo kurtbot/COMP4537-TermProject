@@ -1,4 +1,4 @@
-// [GET] Gets all users from the database (ADMIN ONLY)
+// [GET] Gets User Information
 document.addEventListener('DOMContentLoaded', (event) => {
     getUser(read);
 
@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })
         let data = await result.json();
 
+        // [GET] Gets all users from the database (ADMIN ONLY)
         if (data[0].isAdmin) {
             reqUri = tAddr + rootURL + `/user`;
             (async (resolve, reject) => {
@@ -36,25 +37,33 @@ function read(user) {
     let losses = user.lose;
     let draws = user.draw;
     let elo = user.elo;
+    let adminState = user.isAdmin;
 
     let row = document.createElement("tr");
     let winsTD = document.createElement("td");
     let lossesTD = document.createElement("td");
     let drawsTD = document.createElement("td");
     let rankTD = document.createElement("td");
+    let adminStatus = document.createElement("td");
 
     // table row information
     row.id = "user";
 
-    // TODO: Read Wins
+    // Read Wins
     winsTD.innerHTML = wins;
-    // TODO: Read Losses
+    // Read Losses
     lossesTD.innerHTML = losses;
-    // TODO: Read Draws
+    // Read Draws
     drawsTD.innerHTML = draws;
 
     // elo
     rankTD.innerHTML = elo;
+
+    if(adminState) {
+        adminStatus.innerHTML = "O";
+    } else {
+        adminStatus.innerHTML = "X";
+    }
 
     // edit button
     let editButton = document.createElement("button");
@@ -66,6 +75,7 @@ function read(user) {
     row.appendChild(lossesTD);
     row.appendChild(drawsTD);
     row.appendChild(rankTD);
+    row.appendChild(adminStatus);
 
     row.appendChild(editButton);
 
@@ -84,13 +94,13 @@ function readAllUsers(users) {
     div.className = "users_table";
     table.id = "userList";
 
-    // do for loop here
     let row0 = document.createElement("tr");
     let thU = document.createElement("th");
     let thW = document.createElement("th");
     let thL = document.createElement("th");
     let thD = document.createElement("th");
     let thR = document.createElement("th");
+    let thAdmin = document.createElement("th");
     let thEdit = document.createElement("th");
 
     thU.innerHTML = "Username"
@@ -98,12 +108,14 @@ function readAllUsers(users) {
     thL.innerHTML = "Losses"
     thD.innerHTML = "Draws"
     thR.innerHTML = "elo"
+    thAdmin.innerHTML = "Admin?"
 
     table.appendChild(row0);
     users.forEach(user => {
         let uid = user.userId;
         let username = user.username;
         let elo = user.elo;
+        let adminState = user.isAdmin;
 
         if (uid != sessionStorage.getItem('TTTuserId')){
             let row1 = document.createElement("tr");
@@ -112,9 +124,9 @@ function readAllUsers(users) {
             let lossesTD = document.createElement("td");
             let drawsTD = document.createElement("td");
             let rankTD = document.createElement("td");
+            let adminStatus = document.createElement("td");
             let editButton = document.createElement("button");
             let delButton = document.createElement("button");
-            let adminButton = document.createElement("button");
 
             // table row information
             row1.id = "user" + uid;
@@ -134,11 +146,20 @@ function readAllUsers(users) {
             rankTD.id = "elo" + uid;
             rankTD.innerHTML = elo;
 
+            // admin
+            adminStatus.id = "adminState" + uid;
+            if(adminState) {
+                adminStatus.innerHTML = "O";
+            } else {
+                adminStatus.innerHTML = "X";
+            }
+
             row1.appendChild(usernameTD);
             row1.appendChild(winsTD);
             row1.appendChild(lossesTD);
             row1.appendChild(drawsTD);
             row1.appendChild(rankTD);
+            row1.appendChild(adminStatus);
 
             // edit button
             editButton.innerHTML = "Edit";
@@ -149,15 +170,8 @@ function readAllUsers(users) {
             delButton.className = "btn";
             delButton.onclick = () => deleteUser(uid);
 
-            if(!user.isAdmin){
-                adminButton.innerHTML = "Promote to Admin";
-            } else {
-                adminButton.innerHTML = "Remove Admin Rights";
-            }
-
             row1.appendChild(editButton);
             row1.appendChild(delButton);
-            row1.appendChild(adminButton);
             
             table.appendChild(row1);
             
@@ -170,10 +184,12 @@ function readAllUsers(users) {
     row0.appendChild(thL);
     row0.appendChild(thD);
     row0.appendChild(thR);
+    row0.appendChild(thAdmin);
     row0.appendChild(thEdit);
     document.getElementById("usersTable").appendChild(div);
 }
 
+// Shows the form to edit a user
 function editUser(user, userId) {
     console.log("clicked user edit button");
     document.getElementById("editContainer").style.display = "block";
@@ -181,6 +197,8 @@ function editUser(user, userId) {
     let usernameInput = document.getElementById("username");
     let passwordInput = document.getElementById("password");
     let updateBtn = document.getElementById("updateButton");
+
+    let adminStatus = document.getElementById("isadmin");
 
     const togglePassword = document.getElementById('togglePassword');
     const passwordSelector = document.getElementById('password');
@@ -196,9 +214,16 @@ function editUser(user, userId) {
     usernameInput.value = user.username;
     passwordInput.value = user.password;
 
+    if(!user.isAdmin){
+        adminStatus.checked = false;
+    } else { // TODO: Should a user be able to revoke admin rights from themselves?
+        adminStatus.checked = true;
+    }
+
     updateBtn.onclick = () => updateUser(userId);
 }
 
+// Sends a Request to Update a User
 function updateUser(userId) {
     console.log("Clicked the update button");
     console.log("userid: " + userId)
@@ -206,8 +231,16 @@ function updateUser(userId) {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
 
+    let adminState = document.getElementById("isadmin").checked;
+    let isAdmin = 0;
+    
+    if (adminState){
+        isAdmin = 1;
+    }
+
     console.log("username: " + username);
     console.log("password: " + password);
+    console.log("isAdmin? " + adminState);
 
     // [PUT]
     let reqUri = tAddr + rootURL + `/user`;
@@ -219,15 +252,17 @@ function updateUser(userId) {
                 userId: userId,
                 username: username,
                 password: password,
+                isAdmin: isAdmin
             })
         }).then(res => {
             window.location.reload();
         })
-        let data = await result.json();
+
     })();
     return false;
 }
 
+// Deletes a user
 function deleteUser(userId) {
     console.log("Clicked the delete button");
     console.log("userid: " + userId);
@@ -242,9 +277,6 @@ function deleteUser(userId) {
                 userId: userId
             })
         })
-        // let data = await result.json();
-        // console.log(data);
-        // alert(result);
         console.log(result);
         window.location.href = 'profile.html';
     })();

@@ -3,6 +3,7 @@ const tAddr = "http://localhost:8888";
 // const rootURL = "/comp4537/termproject/api/v1"
 const rootURL = ""
 
+// Signed In
 if(sessionStorage.getItem('TTTuserId'))
 {
     // show logout
@@ -23,6 +24,8 @@ if(sessionStorage.getItem('TTTuserId'))
                 console.log(res);
                 // localStorage.setItem('TTTuserId', res[0].userId);
                 if(res[0].isAdmin == 1){
+                    document.getElementById("banner").innerHTML = "Welcome " + res[0].username + "!";
+                    // Admin
                     let htmlTxt = `<div class = "options">
                         <ul>
                             <li>
@@ -43,9 +46,8 @@ if(sessionStorage.getItem('TTTuserId'))
                 }
             })
         })();
-
 })
-
+    // Regular User
     let htmlTxt = `<div class = "options">
     <ul>
         <li>
@@ -58,7 +60,7 @@ if(sessionStorage.getItem('TTTuserId'))
             <a class="btn" href = "./leaderboard.html">Leaderboard</a>
         </li>
     </ul>
-</div>`
+    </div>`
 
     document.getElementById('mainContainer').innerHTML = htmlTxt;
 }
