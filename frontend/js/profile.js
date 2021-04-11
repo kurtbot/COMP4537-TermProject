@@ -101,59 +101,67 @@ function readAllUsers(users) {
         let username = user.username;
         let elo = user.elo;
 
-    if (uid != sessionStorage.getItem('TTTuserId')){
+        if (uid != sessionStorage.getItem('TTTuserId')){
+            let row1 = document.createElement("tr");
+            let usernameTD = document.createElement("td");
+            let winsTD = document.createElement("td");
+            let lossesTD = document.createElement("td");
+            let drawsTD = document.createElement("td");
+            let rankTD = document.createElement("td");
+            let editButton = document.createElement("button");
+            let delButton = document.createElement("button");
+            let adminButton = document.createElement("button");
 
-        let row1 = document.createElement("tr");
-        let usernameTD = document.createElement("td");
-        let winsTD = document.createElement("td");
-        let lossesTD = document.createElement("td");
-        let drawsTD = document.createElement("td");
-        let rankTD = document.createElement("td");
-        let editButton = document.createElement("button");
-        let delButton = document.createElement("button");
+            // table row information
+            row1.id = "user" + uid;
 
-        // table row information
-        row1.id = "user" + uid;
+            // username
+            usernameTD.id = "username" + uid;
+            usernameTD.innerHTML = username;
 
-        // username
-        usernameTD.id = "username" + uid;
-        usernameTD.innerHTML = username;
+            // Read Wins
+            winsTD.innerHTML = user.win;
+            // Read Losses
+            lossesTD.innerHTML = user.lose;
+            // Read Draws
+            drawsTD.innerHTML = user.draw;
 
-        // Read Wins
-        winsTD.innerHTML = user.win;
-        // Read Losses
-        lossesTD.innerHTML = user.lose;
-        // Read Draws
-        drawsTD.innerHTML = user.draw;
+            // elo
+            rankTD.id = "elo" + uid;
+            rankTD.innerHTML = elo;
 
-        // elo
-        rankTD.id = "elo" + uid;
-        rankTD.innerHTML = elo;
+            row1.appendChild(usernameTD);
+            row1.appendChild(winsTD);
+            row1.appendChild(lossesTD);
+            row1.appendChild(drawsTD);
+            row1.appendChild(rankTD);
 
-        row1.appendChild(usernameTD);
-        row1.appendChild(winsTD);
-        row1.appendChild(lossesTD);
-        row1.appendChild(drawsTD);
-        row1.appendChild(rankTD);
+            // edit button
+            editButton.innerHTML = "Edit";
+            editButton.className = "btn";
+            editButton.addEventListener('click', function(e){
+                let id = e.currentTarget.userId;
+                console.log(id);
+            })
+            // delete button
+            delButton.innerHTML = "Delete";
+            delButton.className = "btn";
+            delButton.onclick = () => deleteUser(uid);
 
-        // edit button
-        editButton.innerHTML = "Edit";
-        editButton.className = "btn";
-        editButton.addEventListener('click', function(e){
-            let id = e.currentTarget.userId;
-            console.log(id);
-        })
-        // delete button
-        delButton.innerHTML = "Delete";
-        delButton.className = "btn";
+            if(!user.isAdmin){
+                adminButton.innerHTML = "Promote to Admin";
+            } else {
+                adminButton.innerHTML = "Remove Admin Rights";
+            }
 
-        row1.appendChild(editButton);
-        row1.appendChild(delButton);
-        
-        table.appendChild(row1);
-        
-        div.appendChild(h2);
-        div.appendChild(table);
+            row1.appendChild(editButton);
+            row1.appendChild(delButton);
+            row1.appendChild(adminButton);
+            
+            table.appendChild(row1);
+            
+            div.appendChild(h2);
+            div.appendChild(table);
         }
     });
     row0.appendChild(thU);
@@ -172,9 +180,8 @@ function editUser(user) {
     const togglePassword = document.getElementById('togglePassword');
     const passwordSelector = document.getElementById('password');
 
-    togglePassword.addEventListener('click', function (e) {
-        console.log("CLICK THE EYE");
-        // toggle the type attribute
+    togglePassword.addEventListener('click', function () {
+        // toggle type
         const type = (passwordSelector.getAttribute('type') == 'password') ? 'text' : 'password';
         passwordSelector.setAttribute('type', type);
         // toggle the eye slash icon
@@ -214,12 +221,10 @@ function updateUser() {
     return false;
 }
 
-function deleteUser() {
+function deleteUser(userId) {
     console.log("Clicked the delete button");
-
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-
+    console.log("userid: " + userId);
+    
     // [DELETE]
     let reqUri = tAddr + rootURL + `/user`;
     (async (resolve, reject) => {
@@ -227,10 +232,13 @@ function deleteUser() {
             method: 'delete',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                userId: username
+                userId: userId
             })
         })
-        let data = await result.json();
+        // let data = await result.json();
+        // console.log(data);
+        // alert(result);
+        console.log(result);
         window.location.href = 'profile.html';
     })();
 }

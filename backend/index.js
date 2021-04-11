@@ -193,9 +193,8 @@ app.delete(endPointRoot + '/user', (req, res) => {
         db.query(query, (err, result) => {
             if (err) throw err;
             res.json(result);
-        });
+        })
     });
-    res.send('');
 });
 
 // ====================================
