@@ -1,5 +1,8 @@
 const addr = "https://kmilan.ca/comp4537/termproject/api/v1/user"
 
+// const bcrypt = require('bcryptjs')
+
+// [GET] Gets all users from the database (ADMIN ONLY)
 document.addEventListener('DOMContentLoaded', (event) => {
     //the event occurred
     let xhttp = new XMLHttpRequest();
@@ -21,6 +24,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 })
 
+// Reads the information from the database and outputs as a table
 function read(user) {
     let uid = user.userId;
     let username = user.username;
@@ -28,6 +32,9 @@ function read(user) {
 
     let row = document.createElement("tr");
     let usernameTD = document.createElement("td");
+    let winsTD = document.createElement("td");
+    let lossesTD = document.createElement("td");
+    let drawsTD = document.createElement("td");
     let rankTD = document.createElement("td");
 
     // table row information
@@ -37,39 +44,18 @@ function read(user) {
     usernameTD.id = "username" + uid;
     usernameTD.innerHTML = username;
 
+    // TODO: Read Wins
+    // TODO: Read Losses
+    // TODO: Read Draws
+
     // elo
     rankTD.id = "elo" + uid;
     rankTD.innerHTML = elo;
 
     row.appendChild(usernameTD);
+    row.appendChild(winsTD);
+    row.appendChild(lossesTD);
+    row.appendChild(drawsTD);
     row.appendChild(rankTD);
     document.getElementById("userList").appendChild(row);
-}
-
-// [POST]
-function addUser(){
-    console.log("Clicked add user!");
-
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("chk_password").value;
-
-    if (password != confirmPassword) {
-        alert("Passwords Don't Match! Try Again");
-    } else {
-        ( async() => {
-            let result = await fetch('https://kmilan.ca/comp4537/termproject/api/v1/user', {
-                    method: 'post',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                }).then(res => {
-                    if (res.ok) return res.json();
-                }).then(res => {
-                    console.log(res);
-                })
-            })();
-    }
 }
