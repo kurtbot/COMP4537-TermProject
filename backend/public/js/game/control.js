@@ -80,7 +80,6 @@ class TTTBoard {
 
                 button.onMouseClick = () => {
                     //  trigger server code
-                    socket.emit('move', { id: localStorage.getItem('userId'), move: { x: i, y: j } });
                     button.render = () => {
                         fill(color(255));
                         noStroke();
@@ -92,10 +91,6 @@ class TTTBoard {
             }
             this.tiles.push(row);
         }
-    }
-
-    updateBoard(board) {
-
     }
 
     update() {

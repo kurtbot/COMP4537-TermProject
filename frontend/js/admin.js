@@ -1,5 +1,3 @@
-const addr = "https://kmilan.ca/comp4537/termproject/api/v1/queries"
-
 const endpointRoot = '/comp4537/termproject/api/v1'
 
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -7,7 +5,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let xhttp = new XMLHttpRequest();
     
     // [GET]
-    xhttp.open("GET", addr, true);
+    xhttp.open("GET", tAddr + rootURL + '/queries', true);
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.send();
     xhttp.onreadystatechange = function(){

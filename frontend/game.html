@@ -15,9 +15,28 @@
 		}
 	</style>
 	<!-- Socket IO -->
-	<script src="http://localhost:8888/socket.io/socket.io.js"></script>
+
+	<!-- <script src="/socket.io/socket.io.js"></script> -->
+	<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"
+		integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU"
+		crossorigin="anonymous"></script>
 	<script>
-		var socket = io();
+		var connectionOptions = {
+			// "force new connection" : true,
+			// "reconnectionAttempts": "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
+			// "timeout" : 10000, //before connect_error and connect_timeout are emitted.
+			"transports": ["websocket"]
+		};
+		var socket = io('http://localhost:8888', { transports: ["websocket"] });
+
+		socket.emit('join game', { id: sessionStorage.getItem('TTTuserId') });
+
+		socket.on('error', msg => {
+			if (msg.err == 422)
+				console.log('change website to login');
+			if (msg.err == 423)
+				console.log('change website to login');
+		})
 	</script>
 
 	<!-- Main P5 Library -->

@@ -13,11 +13,8 @@
 
     <div id = "login">
         <form>
-            <label><b>Email</b></label>
-            <input type="email" id="email" placeholder ="Enter Email" name="email"><br/>
-
-            <label><b>Username</b></label>
-            <input type="text" id = "username" placeholder="Enter Username" name="uname" required><br/>
+            <label><b>Email/Username</b></label>
+            <input type="email" id="email" placeholder ="Enter Email or Username" name="email"><br/>
       
             <label><b>Password</b></label>
             <input type="password" id = "password" placeholder="Enter Password" name="psw" required><br/>
@@ -33,11 +30,12 @@
                 Don't have an account yet? Click <a href="./signup.html">here</a> to sign up
             </span>
             <br/>
-            <button onclick = "addUser()" id = "add_btn">Login</button>
+            <button id = "add_btn" onclick = "return login()">Login</button>
         </form>
     </div>
     <br/>
-
     <a class="btn" href="./index.html">Back</a>
+
+    <script src = "./js/login.js"></script>
 </body>
 </html>

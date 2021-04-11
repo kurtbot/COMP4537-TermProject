@@ -7,3 +7,16 @@
     background: #68bb59;
     color:#ffffff;
 }
+
+.hidden>div {
+	display:none;
+}
+
+.visible>div {
+	display:block;
+}
+
+i {
+    margin-left: -30px;
+    cursor: pointer;
+}
