@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 // Reads the information from the database and outputs as a table
 function read(user) {
     console.log(user);
+    
+    let usernameTitle = document.getElementById("usernameHeader");
+    usernameTitle.innerHTML = user.username;
+
     let wins = user.win;
     let losses = user.lose;
     let draws = user.draw;
@@ -56,7 +60,7 @@ function read(user) {
     let editButton = document.createElement("button");
     editButton.innerHTML = "Edit";
     editButton.className = "btn";
-    editButton.onclick = () => getUser(editUser);
+    editButton.onclick = () => editUser(user, sessionStorage.getItem('TTTuserId'));
 
     row.appendChild(winsTD);
     row.appendChild(lossesTD);
@@ -139,10 +143,7 @@ function readAllUsers(users) {
             // edit button
             editButton.innerHTML = "Edit";
             editButton.className = "btn";
-            editButton.addEventListener('click', function(e){
-                let id = e.currentTarget.userId;
-                console.log(id);
-            })
+            editButton.onclick = () => editUser(user, uid);
             // delete button
             delButton.innerHTML = "Delete";
             delButton.className = "btn";
@@ -173,9 +174,13 @@ function readAllUsers(users) {
     document.getElementById("usersTable").appendChild(div);
 }
 
-function editUser(user) {
+function editUser(user, userId) {
+    console.log("clicked user edit button");
+    document.getElementById("editContainer").style.display = "block";
+
     let usernameInput = document.getElementById("username");
     let passwordInput = document.getElementById("password");
+    let updateBtn = document.getElementById("updateButton");
 
     const togglePassword = document.getElementById('togglePassword');
     const passwordSelector = document.getElementById('password');
@@ -188,19 +193,21 @@ function editUser(user) {
         this.classList.toggle('fa-eye-slash');
     });
 
-    console.log("clicked user edit button");
-    document.getElementById("editContainer").style.display = "block";
-
     usernameInput.value = user.username;
     passwordInput.value = user.password;
+
+    updateBtn.onclick = () => updateUser(userId);
 }
 
-function updateUser() {
+function updateUser(userId) {
     console.log("Clicked the update button");
-    console.log("userid: " + user.userId)
+    console.log("userid: " + userId)
 
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
+
+    console.log("username: " + username);
+    console.log("password: " + password);
 
     // [PUT]
     let reqUri = tAddr + rootURL + `/user`;
@@ -209,7 +216,7 @@ function updateUser() {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                userId: user.userId,
+                userId: userId,
                 username: username,
                 password: password,
             })

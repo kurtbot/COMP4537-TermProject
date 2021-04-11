@@ -11,7 +11,7 @@
     <script src="./js/auth.js"></script>
 </head>
 <body>
-    <h2>User</h2>
+    <h2 id = "usernameHeader"></h2>
     <div id = "my_profile">
         <div class = "users_table">
             <table id = "userProfile">
@@ -28,16 +28,16 @@
 
     <div style="display: none;" id = "editContainer">
         <h3>Edit User</h3>
-        <form>
+        <!-- <form> -->
             <label>Username:</label>
             <input type="text" id="username" name="username"><br/>
 
             <label>Password:</label>
             <input type="password" id="password" name="password">
             <i class="far fa-eye" id="togglePassword"></i><br/>
-            <button onclick = "return updateUser()">Update User</button>
+            <button id = "updateButton">Update User</button>
             
-        </form>
+        <!-- </form> -->
     </div>
     <br/>
 
