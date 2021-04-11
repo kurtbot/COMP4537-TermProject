@@ -16,21 +16,22 @@ function addUser(){
     } else {
         ( async() => {
             let result = await fetch(tAddr + rootURL + '/user', {
-                    method: 'post',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: email,
-                        username: username,
-                        password: password,
-                    })
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    username: username,
+                    password: password,
+                })
                 }).then(res => {
                     if (res.ok) return res.json();
                 }).then(res => {
                     console.log(res);
-                    localStorage.setItem('TTTuserId', res[0].userId);
-                    sessionStorage.setItem('TTTuserId', res[0].userId);
+                    localStorage.setItem('TTTuserId', res.insertId);
+                    sessionStorage.setItem('TTTuserId', res.insertId);
                     window.location.href = 'index.html';
                 })
-            })();
+        })();
     }
+    return false;
 }

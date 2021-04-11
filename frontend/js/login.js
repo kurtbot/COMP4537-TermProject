@@ -7,9 +7,7 @@ function login() {
     console.log("Clicked login");
 
     let email = document.getElementById("email").value;
-    // let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
-    // let confirmPassword = document.getElementById("chk_password").value;
 
     console.log("email: " + email);
     console.log("password: " + password);

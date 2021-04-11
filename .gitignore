@@ -106,4 +106,7 @@ dist
 # Nodejs in backend
 backend/node_modules/
 
+# package-lock in backend
+backend/package-lock.json
+
 .docx

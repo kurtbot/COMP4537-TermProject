@@ -30,7 +30,7 @@ const db = mysql.createConnection({ // pass in connection options
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'fuckit'
+    database: 'test'
 });
 
 /**
@@ -124,7 +124,6 @@ app.post(endPointRoot + '/login', (req, res) => {
     // Updates queries for admin
     queryIncrement(endPointRoot + '/login', 'post').then((resp) => {
         let email = req.body.email;
-        let username = req.body.username
         let password = req.body.password;
         query = `select * from users
                     where email = "${email}" and password = "${password}";`
@@ -149,6 +148,7 @@ app.post(endPointRoot + '/user', (req, res) => {
         query = `insert into users (email, username, password) values ("${email}", "${username}", "${password}");`;
         let ret = {};
         db.query(query, (err, result) => {
+            if (err) throw err;
             ret['insertId'] = result.insertId;
             ret['elo'] = 0;
             res.json(ret);
