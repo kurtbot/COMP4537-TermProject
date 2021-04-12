@@ -21,22 +21,9 @@
 		integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU"
 		crossorigin="anonymous"></script>
 	<script>
-		var connectionOptions = {
-			// "force new connection" : true,
-			// "reconnectionAttempts": "Infinity", //avoid having user reconnect manually in order to prevent dead clients after a server restart
-			// "timeout" : 10000, //before connect_error and connect_timeout are emitted.
-			"transports": ["websocket"]
-		};
 		var socket = io('http://localhost:8888', { transports: ["websocket"] });
 
-		socket.emit('join game', { id: sessionStorage.getItem('TTTuserId') });
-
-		socket.on('error', msg => {
-			if (msg.err == 422)
-				console.log('change website to login');
-			if (msg.err == 423)
-				console.log('change website to login');
-		})
+		// socket.emit('join game', { id: sessionStorage.getItem('TTTuserId') });
 	</script>
 
 	<!-- Main P5 Library -->
@@ -46,11 +33,13 @@
 	<!-- Main Game Library -->
 	<script src="./js/game/globals.js"></script>
 	<script src="./js/game/helper.js"></script>
-	<script src="./js/game/control.js"></script>
-	<script src="./js/game/game.js"></script>
-
+	<!-- <script src="./js/game/control.js"></script> -->
+	<!-- <script src="./js/game/game.js"></script> -->
+	<script src="./js/game/ttt.js"></script>
+	
 	<!-- Main Javascript -->
 	<script src="./js/game/main.js"></script>
+	<script src="./js/game/game-sockets.js"></script>
 </head>
 
 <body>

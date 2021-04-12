@@ -1,4 +1,4 @@
-var canvasOffsetX = 10;
-var canvasOffsetY = 10;
-var mouseColliderWidth = 1;
-var mouseColliderHeight = 1;
+let canvasOffsetX = 10;
+let canvasOffsetY = 10;
+let mouseCollider = {x : 1, y: 1};
+let isTurn = false;
