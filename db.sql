@@ -10,6 +10,13 @@ create table if not exists `users` (
     `isAdmin` boolean default false
 );
 
+create table if not exists `reviews` (
+    `reviewId` int(11) PRIMARY KEY AUTO_INCREMENT,
+    `userId` int(10) not null,
+    `reviewBody` varchar(100) not null,
+    CONSTRAINT fk_userId FOREIGN KEY (userId) REFERENCES users(userId)
+);
+
 create table if not exists `matches` (
     `matchId` int(11) PRIMARY KEY AUTO_INCREMENT,
     `user1Id` int(10) not null,

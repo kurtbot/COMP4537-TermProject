@@ -4,6 +4,7 @@
 
 const express = require('express'); // get the express node module
 const app = express(); // setup the http server
+const { body, validationResult } = require('express-validator');
 
 // setup app server
 app.use(express.urlencoded({ extended: true })) // parses url data
@@ -120,21 +121,28 @@ app.get(endPointRoot + '/leaderboard', (req, res) => {
 
 // [POST]
 // A user logs in
-app.post(endPointRoot + '/login', (req, res) => {
+app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exists(), (req, res) => {
     let query;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     // Updates queries for admin
     queryIncrement(endPointRoot + '/login', 'post').then((resp) => {
         let email = req.body.email;
         let password = req.body.password;
+
         query = `select * from users
                     where email = "${email}" and password = "${password}";`
         db.query(query, (err, result) => {
             if (err) throw err;
 
-            if (result.length)
-                res.json(result);
-            else
-                res.json({ status: 404 })
+            if (result.length < 1)
+                return res.sendStatus(400);
+
+            return res.json(result);
         });
     })
 })
@@ -147,24 +155,33 @@ app.post(endPointRoot + '/user', (req, res) => {
         let password = req.body.password;
         let email = req.body.email;
         query = `insert into users (email, username, password) values ("${email}", "${username}", "${password}");`;
-        let ret = {};
         db.query(query, (err, result) => {
             if (err) throw err;
             ret['insertId'] = result.insertId;
-            ret['elo'] = 0;
-            res.json(ret);
+            res.json(result);
         });
     });
 });
 
 
-app.post(endPointRoot + '/match', (req, res) => {
-    queryIncrement(endPointRoot + '/match', 'post').then((resp) => {
-        let player1 = req.body.p1;
-        let player2 = req.body.p2;
-        let win = req.body.win;
-        let query = `insert into matches (user1Id, user2Id, winner) values (${player1, player2, win})`;
 
+// Leave a game review
+app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('reviewBody').isString().isLength({max:100}), (req, res) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });    
+    }
+
+    queryIncrement(endPointRoot + '/review', 'post').then((resp) => {
+        let userId = req.body.userId;
+        let reviewBody = req.body.reviewBody;
+        let query = `insert into reviews (userId, reviewBody) values (${userId}, "${reviewBody}")`;
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            res.json(result)
+        })
     })
 });
 
@@ -186,6 +203,24 @@ app.put(endPointRoot + '/user', (req, res) => {
     })
 });
 
+app.put(endPointRoot + '/match', (req, res) => {
+    let query;
+    console.log(req.body);
+    let matchId = req.body.matchId;
+    let winner = req.body.winner;
+    queryIncrement(endPointRoot + '/match', 'put').then((resp) => {
+        query = `UPDATE matches SET winner = ${winner} WHERE matchId = ${matchId};`;
+        db.query(query, (err, result) => {
+            if (err) throw err;
+
+            if (result.length < 1)
+                return res.sendStatus(404);
+
+            return res.json(result);
+        })
+    })
+});
+
 // [DELETE]
 // Deletes a user
 app.delete(endPointRoot + '/user', (req, res) => {
@@ -193,6 +228,18 @@ app.delete(endPointRoot + '/user', (req, res) => {
     let id = req.body.userId;
     queryIncrement(endPointRoot + '/user', 'delete').then((resp) => {
         query = `DELETE FROM users WHERE userId = ${id}`
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            res.json(result);
+        })
+    });
+});
+
+app.delete(endPointRoot + '/match/:matchId', (req, res) => {
+    let query;
+    let id = req.params.matchId;
+    queryIncrement(endPointRoot + '/user', 'delete').then((resp) => {
+        query = `DELETE FROM matches WHERE matchId = ${id}`
         db.query(query, (err, result) => {
             if (err) throw err;
             res.json(result);
@@ -273,29 +320,59 @@ function Match(p1, p2) {
         }
     }
 
+    let equals3 = (a, b, c) => {
+        return (a == b && b == c && a != '');
+    }
+
     this.checkBoard = () => {
 
+        let winner = -1;
         // check row
+        for (let i = 0; i < 3; i++) {
+            if (equals3(this.board[i][0], this.board[i][1], this.board[i][2]))
+                if (this.board[i][0] == this.p1.playerType)
+                    winner = 1;
+                else if (this.board[i][0] == this.p2.playerType)
+                    winner = 2;
+        }
 
         // check col
+        for (let i = 0; i < 3; i++) {
+            if (equals3(this.board[0][i], this.board[1][i], this.board[2][i]))
+                if (this.board[0][i] == this.p1.playerType)
+                    winner = 1;
+                else if (this.board[0][i] == this.p2.playerType)
+                    winner = 2;
+        }
 
         // check diag
 
+        if (equals3(this.board[0][0], this.board[1][1], this.board[2][2]))
+            if (this.board[0][0] == this.p1.playerType)
+                winner = 1;
+            else if (this.board[0][0] == this.p2.playerType)
+                winner = 2;
 
+        if (equals3(this.board[2][0], this.board[1][1], this.board[0][2]))
+            if (this.board[2][0] == this.p1.playerType)
+                winner = 1;
+            else if (this.board[2][0] == this.p2.playerType)
+                winner = 2;
 
-        return -1;
+        return winner;
     };
 
     this.saveMatch = () => {
 
         // save the match data
-        // update w/l/d for players
-        // update elo for players
-
         let query = `insert into matches (user1Id, user2Id, winner) values (${this.p1.id}, ${this.p2.id}, ${this.winner})`;
         db.query(query, (err, result) => {
             if (err) throw err;
         })
+        // update w/l/d for players
+
+        // update elo for players
+
 
 
 
@@ -341,7 +418,6 @@ function Match(p1, p2) {
         this.turn = 2;
     }
 }
-
 
 /** @type {Match} */
 let matches = [];

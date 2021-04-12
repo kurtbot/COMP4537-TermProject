@@ -25,9 +25,11 @@ function login() {
             if (res.ok) return res.json();
         }).then(res => {
             console.log(res);
-            localStorage.setItem('TTTuserId', res[0].userId);
-            sessionStorage.setItem('TTTuserId', res[0].userId);
-            window.location.href = 'index.html';
+            // localStorage.setItem('TTTuserId', res[0].userId);
+            if (res) {
+                sessionStorage.setItem('TTTuserId', res[0].userId);
+                window.location.href = 'index.html';
+            }
         })
     })();
 
