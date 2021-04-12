@@ -31,7 +31,7 @@ const db = mysql.createConnection({ // pass in connection options
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'fuckit'
+    database: 'test'
 });
 
 /**
@@ -68,7 +68,7 @@ app.get(endPointRoot + '/queries', (req, res) => {
     let query = `select * from queries order by type asc;`
     db.query(query, (err, result) => {
         if (err) throw err;
-        res.json(result);
+        res.status(200).json(result);
     });
 });
 
@@ -80,10 +80,23 @@ app.get(endPointRoot + '/user', (req, res) => {
         query = `select * from users;`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result);
+            res.status(200).json(result);
         });
     });
 });
+
+// Gets all reviews
+app.get(endPointRoot + '/reviews', (req, res) => {
+    let query;
+    queryIncrement(endPointRoot + '/reviews', 'get').then((resp) => {
+        query = `select * from reviews;`
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            res.status(200).json(result);
+        });
+    });
+});
+
 
 // Gets a specific user's information
 app.get(endPointRoot + '/user/:userId', (req, res) => {
@@ -93,7 +106,7 @@ app.get(endPointRoot + '/user/:userId', (req, res) => {
         query = `select * from users where userId = "${userId}"`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result);
+            res.status(200).json(result);
         });
     });
 })
@@ -113,7 +126,7 @@ app.get(endPointRoot + '/leaderboard', (req, res) => {
         query = `select * from users order by elo desc limit 25`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result);
+            res.status(200).json(result);
         });
     });
 })
@@ -140,9 +153,9 @@ app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exis
             if (err) throw err;
 
             if (result.length < 1)
-                return res.sendStatus(400);
+                return res.sendStatus(4500);
 
-            return res.json(result);
+            return res.status(200).json(result);
         });
     })
 })
@@ -158,7 +171,7 @@ app.post(endPointRoot + '/user', (req, res) => {
         db.query(query, (err, result) => {
             if (err) throw err;
             ret['insertId'] = result.insertId;
-            res.json(result);
+            res.status(200).json(result);
         });
     });
 });
@@ -167,7 +180,6 @@ app.post(endPointRoot + '/user', (req, res) => {
 
 // Leave a game review
 app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('reviewBody').isString().isLength({max:100}), (req, res) => {
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -180,7 +192,7 @@ app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('review
         let query = `insert into reviews (userId, reviewBody) values (${userId}, "${reviewBody}")`;
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result)
+            res.status(200).json(result)
         })
     })
 });
@@ -199,7 +211,7 @@ app.put(endPointRoot + '/user', (req, res) => {
         db.query(query, (err, result) => {
             if (err) throw err;
         })
-        res.send('');
+        res.status(200).send('');
     })
 });
 
@@ -216,7 +228,7 @@ app.put(endPointRoot + '/match', (req, res) => {
             if (result.length < 1)
                 return res.sendStatus(404);
 
-            return res.json(result);
+            return res.status(200).json(result);
         })
     })
 });
@@ -230,7 +242,7 @@ app.delete(endPointRoot + '/user', (req, res) => {
         query = `DELETE FROM users WHERE userId = ${id}`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result);
+            res.status(200).json(result);
         })
     });
 });
@@ -242,7 +254,7 @@ app.delete(endPointRoot + '/match/:matchId', (req, res) => {
         query = `DELETE FROM matches WHERE matchId = ${id}`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.json(result);
+            res.status(200).json(result);
         })
     });
 });
