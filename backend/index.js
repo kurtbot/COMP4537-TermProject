@@ -313,12 +313,12 @@ function Match(p1, p2) {
     this.endGame = (chicken) => {
         if (this.p1.socketId == chicken) {
             this.winner = this.p2.id;
-            this.p2.socket.emit('end', {end : 'win by leave'}); 
+            this.p2.socket.emit('end', { end: 'win by leave' });
             this.p1.socket = null
         }
         else {
             this.winner = this.p1.id;
-            this.p1.socket.emit('end', {end : 'win by leave'}); 
+            this.p1.socket.emit('end', { end: 'win by leave' });
             this.p2.socket = null
         }
         this.saveMatch();
@@ -354,6 +354,16 @@ function lookForMatch(id) {
             return matches[i];
     }
     return null;
+}
+
+function clearMatches() {
+    for (let i = 0; i < matches.length; i++) {
+        if (matches[i].p1.socketId == null || matches[i].p2.socketId == null) {
+            matches.splice(i, 1);
+            i--;
+        }
+    }
+    console.log(matches);
 }
 
 io.on('connection', (socket) => {
@@ -429,6 +439,12 @@ io.on('connection', (socket) => {
         if (match.p1.socket && match.p2.socket)
             match.endGame(socket.id);
 
+        // for (let i = 0; i < matches.length; i++) {
+        //     if (matches[i].p1.socketId == socket.id || matches[i].p2.socketId == socket.id) {
+        //         matches.splice(i, 1);
+        //     }
+        // }
+
         for (let i = 0; i < userList.length; i++) {
             if (userList[i].socketId == socket.id) {
                 userList.splice(i, 1);
@@ -436,13 +452,7 @@ io.on('connection', (socket) => {
             }
         }
 
-        for (let i = 0; i < matches.length; i++)
-        {
-            if(matches[i].p1.socketId == socket.id || matches[i].p2.socketId == socket.id)
-            {
-
-            }
-        }
+        clearMatches();
 
     });
 
