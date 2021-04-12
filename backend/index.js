@@ -111,13 +111,40 @@ app.get(endPointRoot + '/user/:userId', (req, res) => {
     });
 })
 
-// TODO: Gets matches for a specific user
-// app.get(endPointRoot + '/match/:userId', (req, res) => {
-//     let query;
-//     queryIncrement(endPointRoot + '/user/:userId', 'get').then((resp) => {
+// Gets matches of all users
+app.get(endPointRoot + '/match', (req, res) => {
+    let query;
+    queryIncrement(endPointRoot + '/match', 'get').then((resp) => {
+        query = `select * from matches;`
+        db.query(query, (err, result) => {
+            if (err) throw err;
+            res.status(200).json(result);
+        });
+    });
+})
 
-//     });
-// })
+// TODO: Gets matches for a specific user
+app.get(endPointRoot + '/match/:userId', (req, res) => {
+    let query;
+    let userId = req.params.userId;
+
+    if (!userId){
+        return res.status(401).json({ errors: 'Send a user id' });
+    }
+
+    queryIncrement(endPointRoot + '/match/:userId', 'get').then((resp) => {
+        query = `select * from matches where user1Id = "${userId}" or user2Id = "${userId}";`
+        db.query(query, (err, result) => {
+            if (err) {
+                return res.status(501).json({error: 'internal database error'});
+            } else if (result.length < 1){
+                return res.status(400).json({error: 'no matches found'});
+            } else {
+                return res.status(200).json(result);
+            }
+        });
+    });
+})
 
 // Get Request for leaderboard
 app.get(endPointRoot + '/leaderboard', (req, res) => {
@@ -153,7 +180,7 @@ app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exis
             if (err) throw err;
 
             if (result.length < 1)
-                return res.sendStatus(4500);
+                return res.sendStatus(500);
 
             return res.status(200).json(result);
         });
@@ -171,12 +198,10 @@ app.post(endPointRoot + '/user', (req, res) => {
         db.query(query, (err, result) => {
             if (err) throw err;
             ret['insertId'] = result.insertId;
-            res.status(200).json(result);
+            return res.status(200).json(result);
         });
     });
 });
-
-
 
 // Leave a game review
 app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('reviewBody').isString().isLength({max:100}), (req, res) => {
@@ -192,7 +217,7 @@ app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('review
         let query = `insert into reviews (userId, reviewBody) values (${userId}, "${reviewBody}")`;
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.status(200).json(result)
+            return res.status(200).json(result)
         })
     })
 });
@@ -211,10 +236,11 @@ app.put(endPointRoot + '/user', (req, res) => {
         db.query(query, (err, result) => {
             if (err) throw err;
         })
-        res.status(200).send('');
+        return res.status(200).send('');
     })
 });
 
+// Updates a match
 app.put(endPointRoot + '/match', (req, res) => {
     let query;
     console.log(req.body);
@@ -235,18 +261,19 @@ app.put(endPointRoot + '/match', (req, res) => {
 
 // [DELETE]
 // Deletes a user
-app.delete(endPointRoot + '/user', (req, res) => {
+app.delete(endPointRoot + '/user/:userId', (req, res) => {
     let query;
-    let id = req.body.userId;
+    let id = req.params.userId;
     queryIncrement(endPointRoot + '/user', 'delete').then((resp) => {
         query = `DELETE FROM users WHERE userId = ${id}`
         db.query(query, (err, result) => {
             if (err) throw err;
-            res.status(200).json(result);
+            return res.status(200).json(result);
         })
     });
 });
 
+// Deletes a match
 app.delete(endPointRoot + '/match/:matchId', (req, res) => {
     let query;
     let id = req.params.matchId;

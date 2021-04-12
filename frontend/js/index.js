@@ -22,9 +22,9 @@ if(sessionStorage.getItem('TTTuserId'))
                 if (res.ok) return res.json();
             }).then(res => {
                 console.log(res);
+                document.getElementById("banner").innerHTML = "Welcome " + res[0].username + "!";
                 // localStorage.setItem('TTTuserId', res[0].userId);
                 if(res[0].isAdmin == 1){
-                    document.getElementById("banner").innerHTML = "Welcome " + res[0].username + "!";
                     // Admin
                     let htmlTxt = `<div class = "options">
                         <ul>

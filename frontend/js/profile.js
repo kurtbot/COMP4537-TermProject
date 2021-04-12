@@ -268,14 +268,11 @@ function deleteUser(userId) {
     console.log("userid: " + userId);
     
     // [DELETE]
-    let reqUri = tAddr + rootURL + `/user`;
+    let reqUri = tAddr + rootURL + `/user/${userId}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'delete',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: userId
-            })
         })
         console.log(result);
         window.location.href = 'profile.html';
