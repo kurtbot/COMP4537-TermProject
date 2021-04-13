@@ -6,12 +6,25 @@ const rootURL = ""
 let userId = sessionStorage.getItem('TTTuserId');
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    // [GET] Gets all users from the database (ADMIN ONLY)
     if (userId) {
-        document.getElementById("reviewForm").style.display = "block";
+        // [GET] to check if user is admin
+        console.log("Checking if admin");
+        let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+        (async (resolve, reject) => {
+            let result = await fetch(reqUri, {
+                method: 'get',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            let data = await result.json();
+            console.log(data);
 
-        let submitBtn = document.getElementById("submit");
-        submitBtn.onclick = () => addReview(userId)
+            if (data[0].isAdmin){
+                document.getElementById("reviewForm").style.display = "block";
+
+                let submitBtn = document.getElementById("submit");
+                submitBtn.onclick = () => addReview(userId)
+            }
+        })()
 
         // [GET] Get Request
         reqUri = tAddr + rootURL + `/reviews`;
@@ -21,7 +34,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 headers: { 'Content-Type': 'application/json' },
             })
             let data = await result.json();
-            console.log(data);
             read(data);
         })();
     } else {
@@ -35,12 +47,17 @@ function read(reviews) {
 
     reviews.forEach(review => {
         let div = document.createElement("div");
+        let name = document.createElement("h4");
         let p = document.createElement("p");
 
         let body = review.reviewBody;
+        let username = review.username;
 
         p.innerHTML = body;
 
+        name.innerHTML = username;
+
+        div.appendChild(name)
         div.appendChild(p);
         section.appendChild(div);
     });
