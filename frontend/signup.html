@@ -7,6 +7,7 @@
     <title>Sign Up</title>
     <link rel = "stylesheet" href = "./css/global.css">
     <link rel = "stylesheet" href = "./css/signup.css">
+    <script src = "./js/validate.js"></script>
 </head>
 <body>
     <div id = "createUserForm">
@@ -14,20 +15,20 @@
             <h2>Sign-Up</h2>
             <label>Email:</label>
             <input type="email" id="email" name="email"><br/>
-
+            <p id = "errorId" style = "display: none;" class = "error"></p>
             <label>Username:</label>
             <input type="text" id="username" name="username"><br/>
-
+            <p id = "errorUser" style = "display: none;" class = "error"></p>
             <label>Enter your password:</label>
             <input type="password" id="password" name="password"><br/>
-
+            <p id = "errorPw" style = "display: none;" class = "error"></p>
             <label>Confirm your password:</label>
             <input type="password" id="chk_password" name="confirm"><br/>
-
+            <p id = "confirmPw" style = "display: none;" class = "error"></p>
             <button onclick ="return addUser()" id ="add_btn">Add a user</button>
         </form>
     </div>
-
+    <br/>
     <a class="btn" href="./index.html">Back</a>
 
     <script src = "./js/signup.js"></script>

@@ -161,7 +161,7 @@ app.get(endPointRoot + '/leaderboard', (req, res) => {
 
 // [POST]
 // A user logs in
-app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exists(), (req, res) => {
+app.post(endPointRoot + '/login', [body('email').isEmail(), body('password').exists()], (req, res) => {
     let query;
     const errors = validationResult(req);
 
@@ -180,7 +180,7 @@ app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exis
             if (err) throw err;
 
             if (result.length < 1)
-                return res.sendStatus(500);
+                return res.sendStatus(401);
 
             return res.status(200).json(result);
         });
