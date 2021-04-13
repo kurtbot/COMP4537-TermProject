@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 });
 app.use(express.static('public'));
 
-const endPointRoot = '';
+const endPointRoot = '/comp4537/termproject/api/v1';
 
 // ====================================
 // MYSQL DATABASE
@@ -28,19 +28,11 @@ const endPointRoot = '';
 
 const mysql = require('mysql');
 const db = mysql.createConnection({ // pass in connection options
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    // database: 'fuckit'
-    database: 'test'
+    host : 'localhost',
+    user: "kmilanca_user1",
+    password: "ISFd?xp}ZbUK",
+    database : 'kmilanca_termproject_ttt'
 });
-
-/**
- * user for main server
- * user: "kmilanca_user1",
- * password: "ISFd?xp}ZbUK",
- * database : 'kmilanca_termproject-ships'
- */
 
 // ====================================
 // HELPER FUNCTION
@@ -119,7 +111,11 @@ app.get(endPointRoot + '/user/:userId', (req, res) => {
 app.get(endPointRoot + '/match', (req, res) => {
     let query;
     queryIncrement(endPointRoot + '/match', 'get').then((resp) => {
-        query = `select * from matches;`
+        query = `SELECT m.matchId, first.username AS user1Id, first.userId AS p1Id, second.username AS user2Id, second.userId AS p2Id, winnerUser.username AS winner, winnerUser.userId AS winnerId
+        FROM Matches m 
+        INNER JOIN Users first ON m.user1Id = first.userId 
+        INNER JOIN Users second ON m.user2Id = second.userId 
+        INNER JOIN Users winnerUser ON m.winner = winnerUser.userId GROUP BY m.matchId;`
         db.query(query, (err, result) => {
             if (err) throw err;
             res.status(200).json(result);
@@ -136,7 +132,12 @@ app.get(endPointRoot + '/match/:userId', (req, res) => {
         if (!userId) {
             return res.status(401).json({ errors: 'Send a user id' });
         }
-        query = `select * from matches where user1Id = "${userId}" or user2Id = "${userId}";`
+        query = `SELECT m.matchId, first.username AS user1Id, first.userId AS p1Id, second.username AS user2Id, second.userId AS p2Id, winnerUser.username AS winner, winnerUser.userId AS winnerId
+        FROM Matches m 
+        INNER JOIN Users first ON m.user1Id = first.userId 
+        INNER JOIN Users second ON m.user2Id = second.userId 
+        INNER JOIN Users winnerUser ON m.winner = winnerUser.userId
+        where first.userId = ${userId} or second.userId = ${userId} GROUP BY m.matchId;`
         db.query(query, (err, result) => {
             if (err) {
                 return res.status(501).json({ error: 'internal database error' });
