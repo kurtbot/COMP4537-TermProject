@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     // [GET] to check if user is admin
-    let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+    let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'get',
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         if (!data[0].isAdmin){
             console.log("User is not an admin");
-            reqUri = tAddr + rootURL + `/match/${sessionStorage.getItem('TTTuserId')}`;
+            reqUri = addr + rootURL + `/match/${sessionStorage.getItem('TTTuserId')}`;
             // [GET] Get only matches you're inolved in
             (async (resolve, reject) => {
                 let result = await fetch(reqUri, {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         } else {
             // [GET] Gets all matches from the database (ADMIN ONLY)
             console.log("User is an admin");
-            reqUri = tAddr + rootURL + `/match`;
+            reqUri = addr + rootURL + `/match`;
             (async (resolve, reject) => {
                 let result = await fetch(reqUri, {
                     method: 'get',
@@ -230,7 +230,7 @@ function updateUser(){
 
 function deleteMatch(matchId){   
     // [DELETE]
-    let reqUri = tAddr + rootURL + `/match/${matchId}`;
+    let reqUri = addr + rootURL + `/match/${matchId}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'delete',

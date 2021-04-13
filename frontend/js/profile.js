@@ -190,10 +190,8 @@ function readAllUsers(users) {
 }
 
 function hide() {
-    document.getElementById("errorId").style.display = "none";
     document.getElementById("errorUser").style.display = "none";
     document.getElementById("errorPw").style.display = "none";
-    document.getElementById("confirmPw").style.display = "none";
 }
 
 // Shows the form to edit a user
