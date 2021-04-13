@@ -3,3 +3,9 @@
     background: #68bb59;
     color:#ffffff;
 }
+
+p {
+    margin: auto;
+    color: red;
+    font-size: 14px;
+}

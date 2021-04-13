@@ -189,6 +189,13 @@ function readAllUsers(users) {
     document.getElementById("usersTable").appendChild(div);
 }
 
+function hide() {
+    document.getElementById("errorId").style.display = "none";
+    document.getElementById("errorUser").style.display = "none";
+    document.getElementById("errorPw").style.display = "none";
+    document.getElementById("confirmPw").style.display = "none";
+}
+
 // Shows the form to edit a user
 function editUser(user, userId) {
     console.log("clicked user edit button");
@@ -225,11 +232,12 @@ function editUser(user, userId) {
 
 // Sends a Request to Update a User
 function updateUser(userId) {
-    console.log("Clicked the update button");
-    console.log("userid: " + userId)
+    let noErr = true;
 
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
+
+    hide();
 
     let adminState = document.getElementById("isadmin").checked;
     let isAdmin = 0;
@@ -242,23 +250,43 @@ function updateUser(userId) {
     console.log("password: " + password);
     console.log("isAdmin? " + adminState);
 
-    // [PUT]
-    let reqUri = tAddr + rootURL + `/user`;
-    (async () => {
-        let result = await fetch(reqUri, {
-            method: 'put',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: userId,
-                username: username,
-                password: password,
-                isAdmin: isAdmin
-            })
-        }).then(res => {
-            window.location.reload();
-        })
+    // validation
+    // if username is blank
+    if (!username){
+        console.log("username missing");
+        document.getElementById("errorUser").style.display = "block";
+        document.getElementById("errorUser").innerHTML = "Please enter a username";
+        noErr = false;
+    }
 
-    })();
+    // if password is blank
+    if (!password){
+        console.log("password missing");
+        document.getElementById("errorPw").style.display = "block";
+        document.getElementById("errorPw").innerHTML = "Please enter a password";
+        noErr = false;
+    }
+
+
+    if (noErr){
+        // [PUT]
+        let reqUri = tAddr + rootURL + `/user`;
+        (async () => {
+            let result = await fetch(reqUri, {
+                method: 'put',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userId,
+                    username: username,
+                    password: password,
+                    isAdmin: isAdmin
+                })
+            }).then(res => {
+                window.location.reload();
+            })
+
+        })();
+    }
     return false;
 }
 
