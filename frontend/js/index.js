@@ -24,7 +24,7 @@ if(sessionStorage.getItem('TTTuserId'))
             }).then(res => {
                 console.log(res);
                 document.getElementById("banner").innerHTML = "Welcome " + res[0].username + "!";
-                // localStorage.setItem('TTTuserId', res[0].userId);
+
                 if(res[0].isAdmin == 1){
                     // Admin
                     let htmlTxt =  `                  
@@ -44,24 +44,22 @@ if(sessionStorage.getItem('TTTuserId'))
                 } else
                 {
                     let htmlTxt = `
-        <div class="m-1">
-            <a class="btn btn-outline-info" href = "./profile.html">Profile</a>
-        </div>
-        <div class="m-1">
-            <a class="btn btn-outline-info" href = "./matches.html">Matches</a>
-        </div>
-        <div class="m-1">
-            <a class="btn btn-outline-info" href = "./leaderboard.html">Leaderboard</a>
-        </div>
-    `
+                        <div class="m-1">
+                            <a class="btn btn-outline-info" href = "./profile.html">Profile</a>
+                        </div>
+                        <div class="m-1">
+                            <a class="btn btn-outline-info" href = "./matches.html">Matches</a>
+                        </div>
+                        <div class="m-1">
+                            <a class="btn btn-outline-info" href = "./leaderboard.html">Leaderboard</a>
+                        </div>
+                    `
 
-    document.getElementById('mainContainer').insertAdjacentHTML('beforeend',htmlTxt);
+                    document.getElementById('mainContainer').insertAdjacentHTML('beforeend',htmlTxt);
                 }
             })
         })();
-})
-    // Regular User
-    
+    })
 }
 else
 {

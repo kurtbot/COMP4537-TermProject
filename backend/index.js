@@ -31,7 +31,8 @@ const db = mysql.createConnection({ // pass in connection options
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'fuckit'
+    // database: 'fuckit'
+    database: 'test'
 });
 
 /**
@@ -88,9 +89,12 @@ app.get(endPointRoot + '/user', (req, res) => {
 // Gets all reviews
 app.get(endPointRoot + '/reviews', (req, res) => {
     let query;
+    let query2 = `SELECT * FROM users
+            INNER JOIN reviews
+            ON reviews.userId  = users.userId`;
     queryIncrement(endPointRoot + '/reviews', 'get').then((resp) => {
         query = `select * from reviews;`
-        db.query(query, (err, result) => {
+        db.query(query2, (err, result) => {
             if (err) throw err;
             res.status(200).json(result);
         });
