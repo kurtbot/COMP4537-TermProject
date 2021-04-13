@@ -1,7 +1,6 @@
-const addr = "https://kmilan.ca/"
-const tAddr = "http://localhost:8888";
-// const rootURL = "comp4537/termproject/api/v1"
-const rootURL = ""
+const addr = "https://kmilan.ca"
+// const tAddr = "http://localhost:8888";
+const rootURL = "/comp4537/termproject/api/v1"
 
 function hide() {
     document.getElementById("errorId").style.display = "none";
@@ -57,7 +56,7 @@ function addUser(){
         console.log("valid email");
         if (noErr){
             ( async() => {
-                let result = await fetch(tAddr + rootURL + '/user', {
+                let result = await fetch(addr + rootURL + '/user', {
                     method: 'post',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

@@ -1,7 +1,7 @@
 const addr = "https://kmilan.ca"
-const tAddr = "http://localhost:8888";
-// const rootURL = "/comp4537/termproject/api/v1"
-const rootURL = ""
+// const tAddr = "http://localhost:8888";
+const rootURL = "/comp4537/termproject/api/v1"
+// const rootURL = ""
 
 // Signed In
 if(sessionStorage.getItem('TTTuserId'))
@@ -14,7 +14,7 @@ if(sessionStorage.getItem('TTTuserId'))
     // [GET] Gets all users from the database (ADMIN ONLY)
     document.addEventListener('DOMContentLoaded', (event) => {
         // [GET]
-        let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+        let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
         (async () => {
             let result = await fetch(reqUri, {
                 method: 'get',

@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     headers: { 'Content-Type': 'application/json' },
                 })
                 let data = await result.json();
-                console.log(data);
+                if (result.status == 400){
+                    document.getElementById("resp").innerHTML = "No matches found";
+                }
+
                 readAllMatches(data);
             })()
         }
@@ -61,8 +64,8 @@ function readMatches(matches){
     // let thEdit = document.createElement("th");
 
     thId.innerHTML = "Match ID"
-    thP1.innerHTML = "Player 1 ID"
-    thP2.innerHTML = "Player 2 ID"
+    thP1.innerHTML = "Player 1"
+    thP2.innerHTML = "Player 2"
     thWinner.innerHTML = "Winner"
     // thAdmin.innerHTML = "Admin?"
 
@@ -134,8 +137,8 @@ function readAllMatches(matches) {
     let thDel = document.createElement("th");
 
     thId.innerHTML = "Match ID"
-    thP1.innerHTML = "Player 1 ID"
-    thP2.innerHTML = "Player 2 ID"
+    thP1.innerHTML = "Player 1"
+    thP2.innerHTML = "Player 2"
     thWinner.innerHTML = "Winner"
 
     table.appendChild(row0);
@@ -150,6 +153,7 @@ function readAllMatches(matches) {
         let p1TD = document.createElement("td");
         let p2TD = document.createElement("td");
         let winnerTD = document.createElement("td");
+        let editButton = document.createElement("button");
         let delButton = document.createElement("button");
 
         row.id = "row" + mid;
@@ -176,10 +180,16 @@ function readAllMatches(matches) {
         row.appendChild(winnerTD);
 
         // delete button
+        editButton.innerHTML = "Edit";
+        editButton.className = "btn";
+        editButton.onclick = () => editMatch(mid, winner);
+
+        // delete button
         delButton.innerHTML = "Delete";
         delButton.className = "btn";
         delButton.onclick = () => deleteMatch(mid);
 
+        row.appendChild(editButton);
         row.appendChild(delButton);
 
         table.appendChild(row);
@@ -196,10 +206,29 @@ function readAllMatches(matches) {
     document.getElementById("container").appendChild(div);
 }
 
-function deleteMatch(matchId){
-    console.log("Clicked the delete button");
+function editMatch(matchId, username){
+    console.log("Clicked the edit button");
     console.log("matchid: " + matchId);
+
+    document.getElementById("editContainer").style.display = "block";
+
+    let updateBtn = document.getElementById("updateButton");
+
+    // document.getElementById("errorUser").style.display = "none";
+
+    let usernameInput = document.getElementById("username");
+    usernameInput.value = username;
     
+    updateBtn.onclick = () => updateUser();
+}
+
+function updateUser(){
+    let username = document.getElementById("username").value;
+
+    console.log("new name: " + username);
+}
+
+function deleteMatch(matchId){   
     // [DELETE]
     let reqUri = tAddr + rootURL + `/match/${matchId}`;
     (async (resolve, reject) => {

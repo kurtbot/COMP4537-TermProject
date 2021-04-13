@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     getUser(read);
 
-    let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+    let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'get',
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // [GET] Gets all users from the database (ADMIN ONLY)
         if (data[0].isAdmin) {
-            reqUri = tAddr + rootURL + `/user`;
+            reqUri = addr + rootURL + `/user`;
             (async (resolve, reject) => {
                 let result = await fetch(reqUri, {
                     method: 'get',
@@ -223,7 +223,7 @@ function editUser(user, userId) {
 
     if(!user.isAdmin){
         adminStatus.checked = false;
-    } else { // TODO: Should a user be able to revoke admin rights from themselves?
+    } else { // Should a user be able to revoke admin rights from themselves?
         adminStatus.checked = true;
     }
 
@@ -270,7 +270,7 @@ function updateUser(userId) {
 
     if (noErr){
         // [PUT]
-        let reqUri = tAddr + rootURL + `/user`;
+        let reqUri = addr + rootURL + `/user`;
         (async () => {
             let result = await fetch(reqUri, {
                 method: 'put',
@@ -296,7 +296,7 @@ function deleteUser(userId) {
     console.log("userid: " + userId);
     
     // [DELETE]
-    let reqUri = tAddr + rootURL + `/user/${userId}`;
+    let reqUri = addr + rootURL + `/user/${userId}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'delete',

@@ -1,7 +1,8 @@
 const addr = "https://kmilan.ca"
 const tAddr = "http://localhost:8888";
 // const rootURL = "/comp4537/termproject/api/v1"
-const rootURL = ""
+const rootURL = "";
+
 var gUserId = -1;
 
 if (!sessionStorage.getItem('TTTuserId')) {
@@ -13,7 +14,7 @@ else {
 
 
 function getUser (func) {
-    let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+    let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
     (async () => {
         let result = await fetch(reqUri, {
             method: 'get',
@@ -27,7 +28,7 @@ function getUser (func) {
 }
 
 function isUserAdmin() {
-    let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+    let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
     (async () => {
         let result = await fetch(reqUri, {
             method: 'get',

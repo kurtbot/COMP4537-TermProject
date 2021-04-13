@@ -1,7 +1,6 @@
 const addr = "https://kmilan.ca"
-const tAddr = "http://localhost:8888";
-// const rootURL = "/comp4537/termproject/api/v1"
-const rootURL = ""
+// const tAddr = "http://localhost:8888";
+const rootURL = "/comp4537/termproject/api/v1"
 
 function hide() {
     document.getElementById("errorId").style.display = "none";
@@ -28,7 +27,7 @@ function login() {
         console.log("valid email");
         // if user has entered all fields, and email is correct format
         if (noErr){
-            let reqUri = tAddr + rootURL + '/login';
+            let reqUri = addr + rootURL + '/login';
             (async () => {
                 let result = await fetch(reqUri, {
                     method: 'post',
@@ -44,8 +43,6 @@ function login() {
                         document.getElementById("errorPw").innerHTML = "Invalid Credentials";
                     }
                 }).then(res => {
-                    // console.log(res);
-                    // localStorage.setItem('TTTuserId', res[0].userId);
                     if (res) {
                         sessionStorage.setItem('TTTuserId', res[0].userId);
                         window.location.href = 'index.html';

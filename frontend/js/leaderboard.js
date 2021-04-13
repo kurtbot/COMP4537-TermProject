@@ -1,6 +1,6 @@
 // [GET] Gets the leaderboard
 document.addEventListener('DOMContentLoaded', (event) => {
-    let reqUri = tAddr + rootURL + `/leaderboard`;
+    let reqUri = addr + rootURL + `/leaderboard`;
     console.log(reqUri);
     (async () => {
         let result = await fetch(reqUri, {

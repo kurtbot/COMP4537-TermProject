@@ -1,7 +1,6 @@
 const addr = "https://kmilan.ca"
-const tAddr = "http://localhost:8888";
-// const rootURL = "/comp4537/termproject/api/v1"
-const rootURL = ""
+// const tAddr = "http://localhost:8888";
+const rootURL = "/comp4537/termproject/api/v1"
 
 let userId = sessionStorage.getItem('TTTuserId');
 
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (userId) {
         // [GET] to check if user is admin
         console.log("Checking if admin");
-        let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+        let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
         (async (resolve, reject) => {
             let result = await fetch(reqUri, {
                 method: 'get',
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })()
 
         // [GET] Get Request
-        reqUri = tAddr + rootURL + `/reviews`;
+        reqUri = addr + rootURL + `/reviews`;
         (async () => {
             let result = await fetch(reqUri, {
                 method: 'get',
@@ -74,7 +73,7 @@ function addReview(userId) {
 
     // [POST] Post a review
     ( async() => {
-        let result = await fetch(tAddr + rootURL + '/review', {
+        let result = await fetch(addr + rootURL + '/review', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
