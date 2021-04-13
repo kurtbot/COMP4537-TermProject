@@ -127,11 +127,10 @@ app.get(endPointRoot + '/match', (req, res) => {
     });
 })
 
-// TODO: Gets matches for a specific user
+// Gets matches for a specific user
 app.get(endPointRoot + '/match/:userId', (req, res) => {
     let query;
     let userId = req.params.userId;
-
 
     queryIncrement(endPointRoot + '/match/:userId', 'get').then((resp) => {
         if (!userId) {
@@ -161,7 +160,6 @@ app.get(endPointRoot + '/leaderboard', (req, res) => {
         });
     });
 })
-
 
 // [POST]
 // A user logs in
