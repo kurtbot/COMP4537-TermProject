@@ -1,7 +1,7 @@
 const addr = "https://kmilan.ca"
 const tAddr = "http://localhost:8888";
-// const rootURL = "/comp4537/termproject/api/v1"
-const rootURL = "";
+const rootURL = "/comp4537/termproject/api/v1"
+// const rootURL = "";
 
 var gUserId = -1;
 

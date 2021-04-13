@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     // [GET] to check if user is admin
-    let reqUri = tAddr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
+    let reqUri = addr + rootURL + `/user/${sessionStorage.getItem('TTTuserId')}`;
     (async (resolve, reject) => {
         let result = await fetch(reqUri, {
             method: 'get',
