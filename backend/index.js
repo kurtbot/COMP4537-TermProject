@@ -31,7 +31,7 @@ const db = mysql.createConnection({ // pass in connection options
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'test'
+    database: 'fuckit'
 });
 
 /**
@@ -128,17 +128,17 @@ app.get(endPointRoot + '/match/:userId', (req, res) => {
     let query;
     let userId = req.params.userId;
 
-    if (!userId){
-        return res.status(401).json({ errors: 'Send a user id' });
-    }
 
     queryIncrement(endPointRoot + '/match/:userId', 'get').then((resp) => {
+        if (!userId) {
+            return res.status(401).json({ errors: 'Send a user id' });
+        }
         query = `select * from matches where user1Id = "${userId}" or user2Id = "${userId}";`
         db.query(query, (err, result) => {
             if (err) {
-                return res.status(501).json({error: 'internal database error'});
-            } else if (result.length < 1){
-                return res.status(400).json({error: 'no matches found'});
+                return res.status(501).json({ error: 'internal database error' });
+            } else if (result.length < 1) {
+                return res.status(400).json({ error: 'no matches found' });
             } else {
                 return res.status(200).json(result);
             }
@@ -165,12 +165,12 @@ app.post(endPointRoot + '/login', body('email').isEmail(), body('password').exis
     let query;
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     // Updates queries for admin
     queryIncrement(endPointRoot + '/login', 'post').then((resp) => {
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         let email = req.body.email;
         let password = req.body.password;
 
@@ -204,14 +204,14 @@ app.post(endPointRoot + '/user', (req, res) => {
 });
 
 // Leave a game review
-app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('reviewBody').isString().isLength({max:100}), (req, res) => {
+app.post(endPointRoot + '/review', body('userId').exists().isInt(), body('reviewBody').isString().isLength({ max: 100 }), (req, res) => {
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });    
-    }
-
     queryIncrement(endPointRoot + '/review', 'post').then((resp) => {
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         let userId = req.body.userId;
         let reviewBody = req.body.reviewBody;
         let query = `insert into reviews (userId, reviewBody) values (${userId}, "${reviewBody}")`;
@@ -363,9 +363,19 @@ function Match(p1, p2) {
         return (a == b && b == c && a != '');
     }
 
+    let isDraw = () => {
+        return !(
+            this.board[0].includes('') ||
+            this.board[1].includes('') ||
+            this.board[2].includes('')
+        );
+    }
+
     this.checkBoard = () => {
 
         let winner = -1;
+        if (isDraw())
+            winner = 0;
         // check row
         for (let i = 0; i < 3; i++) {
             if (equals3(this.board[i][0], this.board[i][1], this.board[i][2]))
@@ -398,6 +408,7 @@ function Match(p1, p2) {
             else if (this.board[2][0] == this.p2.playerType)
                 winner = 2;
 
+
         return winner;
     };
 
@@ -420,10 +431,17 @@ function Match(p1, p2) {
     this.tryAgain = () => {
         if (this.turn == 1) {
             this.p1.socket.emit('your_turn', {});
+            this.p2.socket.emit('waiting', { wait: 'player move' });
         }
         else {
             this.p2.socket.emit('your_turn', {});
+            this.p1.socket.emit('waiting', { wait: 'player move' });
         }
+    }
+
+    this.end = () => {
+        this.p1.socket = null;
+        this.p2.socket = null;
     }
 
     this.endGame = (chicken) => {
@@ -445,13 +463,15 @@ function Match(p1, p2) {
         p1.socket.emit('player_type', { playerType: 'O' });
         p1.socket.emit('your_turn', {});
         p2.socket.emit('player_type', { playerType: 'X' });
+        p2.socket.emit('waiting', { wait: 'player move' });
         this.p1.playerType = 'O';
         this.p2.playerType = 'X';
         this.turn = 1;
     } else {
-        p1.socket.emit('player_type', { playerType: 'X' });
-        p2.socket.emit('your_turn', {});
         p2.socket.emit('player_type', { playerType: 'O' });
+        p2.socket.emit('your_turn', {});
+        p1.socket.emit('player_type', { playerType: 'X' });
+        p1.socket.emit('waiting', { wait: 'player move' });
         this.p1.playerType = 'X';
         this.p2.playerType = 'O';
         this.turn = 2;
@@ -473,12 +493,12 @@ function lookForMatch(id) {
 
 function clearMatches() {
     for (let i = 0; i < matches.length; i++) {
-        if (matches[i].p1.socketId == null || matches[i].p2.socketId == null) {
+        if (matches[i].p1.socket == null || matches[i].p2.socket == null) {
             matches.splice(i, 1);
             i--;
         }
     }
-    console.log(matches);
+    console.log('clearing matches', matches);
 }
 
 io.on('connection', (socket) => {
@@ -486,7 +506,7 @@ io.on('connection', (socket) => {
         userList.push(new Player(msg.id, socket.id, socket));
         console.log('join game', msg);
         if (msg.id == null) {
-            socket.emit('error', { err: 422 })
+            socket.emit('error', { err: 'invalid id' })
         }
         else {
             if (waiting) {
@@ -518,16 +538,25 @@ io.on('connection', (socket) => {
                 console.log('board data', match.board);
 
                 if (winner == 1) {
+                    match.sendBoard();
                     match.p1.socket.emit('end', { end: 'win' });   // end win p1
                     match.p2.socket.emit('end', { end: 'lose' });   // end lose p2
+                    match.end();
+                    clearMatches();
                 }
                 else if (winner == 2) {
+                    match.sendBoard();
                     match.p2.socket.emit('end', { end: 'win' });   // end win p2
                     match.p1.socket.emit('end', { end: 'lose' });   // end lose p1
+                    match.end();
+                    clearMatches();
                 }
                 else if (winner == 0) {
+                    match.sendBoard();
                     match.p1.socket.emit('end', { end: 'draw' });   // end draw p1
                     match.p2.socket.emit('end', { end: 'draw' });   // end draw p2
+                    match.end();
+                    clearMatches();
                 }
                 else if (winner == -1) {
                     match.sendBoard();
@@ -549,26 +578,22 @@ io.on('connection', (socket) => {
 
         let match = lookForMatch(socket.id);
 
-        console.log(match);
-
-        if (match.p1.socket && match.p2.socket)
-            match.endGame(socket.id);
-
-        // for (let i = 0; i < matches.length; i++) {
-        //     if (matches[i].p1.socketId == socket.id || matches[i].p2.socketId == socket.id) {
-        //         matches.splice(i, 1);
-        //     }
-        // }
+        if (match)
+            if (match.p1.socket != null && match.p2.socket != null) {
+                console.log('ending game', socket.id);
+                match.endGame(socket.id);
+                clearMatches();
+            }
 
         for (let i = 0; i < userList.length; i++) {
             if (userList[i].socketId == socket.id) {
+                if (waiting && waiting.socketId == socket.id)
+                    waiting = null;
                 userList.splice(i, 1);
                 break;
             }
         }
-
-        clearMatches();
-
+        console.log('users: ', userList);
     });
 
 });
