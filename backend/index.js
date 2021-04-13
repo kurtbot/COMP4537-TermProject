@@ -315,7 +315,7 @@ function Match(p1, p2) {
     this.p2 = p2;
     this.turn = 1;
     this.winner = -1;
-
+    this.isSaved = false;
     this.board = [
         ['', '', ''],
         ['', '', ''],
@@ -378,53 +378,130 @@ function Match(p1, p2) {
         // check row
         for (let i = 0; i < 3; i++) {
             if (equals3(this.board[i][0], this.board[i][1], this.board[i][2]))
-                if (this.board[i][0] == this.p1.playerType)
+                if (this.board[i][0] == this.p1.playerType) {
                     winner = 1;
-                else if (this.board[i][0] == this.p2.playerType)
+                    this.winner = this.p1.id;
+                }
+                else if (this.board[i][0] == this.p2.playerType) {
                     winner = 2;
+                    this.winner = this.p2.id;
+                }
         }
 
         // check col
         for (let i = 0; i < 3; i++) {
             if (equals3(this.board[0][i], this.board[1][i], this.board[2][i]))
-                if (this.board[0][i] == this.p1.playerType)
+                if (this.board[0][i] == this.p1.playerType) {
                     winner = 1;
-                else if (this.board[0][i] == this.p2.playerType)
+                    this.winner = this.p1.id;
+                }
+                else if (this.board[0][i] == this.p2.playerType) {
                     winner = 2;
+                    this.winner = this.p2.id;
+                }
         }
 
         // check diag
 
         if (equals3(this.board[0][0], this.board[1][1], this.board[2][2]))
-            if (this.board[0][0] == this.p1.playerType)
+            if (this.board[0][0] == this.p1.playerType) {
                 winner = 1;
-            else if (this.board[0][0] == this.p2.playerType)
+                this.winner = this.p1.id;
+            }
+            else if (this.board[0][0] == this.p2.playerType) {
                 winner = 2;
+                this.winner = this.p2.id;
+            }
 
         if (equals3(this.board[2][0], this.board[1][1], this.board[0][2]))
-            if (this.board[2][0] == this.p1.playerType)
+            if (this.board[2][0] == this.p1.playerType) {
                 winner = 1;
-            else if (this.board[2][0] == this.p2.playerType)
+                this.winner = this.p1.id;
+            }
+            else if (this.board[2][0] == this.p2.playerType) {
                 winner = 2;
-
+                this.winner = this.p2.id;
+            }
 
         return winner;
     };
 
+    let udpateStats = (player, stat) => {
+        let ret = new Promise((resolve, reject) => {
+            let query = `update \`users\` set \`win\` = win + ${stat.win}, \`lose\` = lose + ${stat.lose}, \`draw\` = draw + ${stat.draw}, \`elo\` = elo + ${stat.elo} where userId = ${player};`;
+            db.query(query, (err, result) => {
+                if (err) throw err;
+                resolve('');
+            });
+        });
+
+        return ret;
+    }
+
     this.saveMatch = () => {
 
-        // save the match data
-        let query = `insert into matches (user1Id, user2Id, winner) values (${this.p1.id}, ${this.p2.id}, ${this.winner})`;
-        db.query(query, (err, result) => {
-            if (err) throw err;
-        })
-        // update w/l/d for players
+        if (!this.isSaved) {
+            // save the match data
+            let query = `insert into matches (user1Id, user2Id, winner) values (${this.p1.id}, ${this.p2.id}, ${this.winner})`;
+            db.query(query, (err, result) => {
+                if (err) throw err;
+            })
 
-        // update elo for players
+            if (this.winner == -1) {
+                // update w/l/d for players
 
+                udpateStats(this.p1.id, {
+                    win: 0,
+                    lose: 0,
+                    draw: 1,
+                    elo: 2
+                });
 
+                udpateStats(this.p2.id, {
+                    win: 0,
+                    lose: 0,
+                    draw: 1,
+                    elo: 2
+                });
+            }
+            else {
+                // update elo for players
 
+                if (this.winner == this.p1.id) {
+                    console.log('p1 win');
+                    udpateStats(this.p1.id, {
+                        win: 1,
+                        lose: 0,
+                        draw: 0,
+                        elo: 5
+                    });
 
+                    udpateStats(this.p2.id, {
+                        win: 0,
+                        lose: 1,
+                        draw: 0,
+                        elo: 0
+                    });
+                }
+                else if (this.winner == this.p2.id) {
+                    console.log('p2 win');
+                    udpateStats(this.p2.id, {
+                        win: 1,
+                        lose: 0,
+                        draw: 0,
+                        elo: 5
+                    });
+
+                    udpateStats(this.p1.id, {
+                        win: 0,
+                        lose: 1,
+                        draw: 0,
+                        elo: 0
+                    });
+                }
+            }
+            this.isSaved = true;
+        }
     };
 
     this.tryAgain = () => {
@@ -441,6 +518,7 @@ function Match(p1, p2) {
     this.end = () => {
         this.p1.socket = null;
         this.p2.socket = null;
+        this.saveMatch();
     }
 
     this.endGame = (chicken) => {
