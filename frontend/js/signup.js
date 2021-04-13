@@ -67,6 +67,7 @@ function addUser(){
                     }).then(res => {
                         if (res.ok) return res.json();
                     }).then(res => {
+                        console.log(res);
                         // localStorage.setItem('TTTuserId', res.insertId);
                         sessionStorage.setItem('TTTuserId', res.insertId);
                         window.location.href = 'index.html';

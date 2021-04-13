@@ -33,7 +33,7 @@ function read(stat) {
     methodTD.innerHTML = method.toUpperCase().bold();
 
     // endpoint
-    endpointTD.innerHTML = endpointRoot + uri;
+    endpointTD.innerHTML = uri;
 
     // requests 
     countTD.innerHTML = count;
