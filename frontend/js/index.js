@@ -9,6 +9,7 @@ if(sessionStorage.getItem('TTTuserId'))
     // show logout
     document.getElementById('authStatus').onclick = logout;
     document.getElementById('authStatus').innerText = 'Logout';
+    document.getElementById('authStatus').setAttribute('class', 'btn btn-outline-danger')
 
     // [GET] Gets all users from the database (ADMIN ONLY)
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -26,43 +27,41 @@ if(sessionStorage.getItem('TTTuserId'))
                 // localStorage.setItem('TTTuserId', res[0].userId);
                 if(res[0].isAdmin == 1){
                     // Admin
-                    let htmlTxt = `<div class = "options">
-                        <ul>
-                            <li>
-                                <a class="btn" href = "./profile.html">Profile</a>
-                            </li>
-                            <li>
-                                <a class="btn" href = "./admin.html">Admin</a>
-                            </li>
-                            <li>
-                                <a class="btn" href = "./matches.html">Matches</a>
-                            </li>
-                            <li>
-                                <a class="btn" href = "./leaderboard.html">Leaderboard</a>
-                            </li>
-                        </ul>
-                    </div>`
-                    document.getElementById('mainContainer').innerHTML = htmlTxt;
+                    let htmlTxt =  `                  
+                            <div class="m-1">
+                                <a class="btn btn-outline-info" href = "./profile.html">Profile</a>
+                            </div>
+                            <div class="m-1">
+                                <a class="btn btn-outline-info" href = "./admin.html">Admin</a>
+                            </div>
+                            <div class="m-1">
+                                <a class="btn btn-outline-info" href = "./matches.html">Matches</a>
+                            </div>
+                            <div class="m-1">
+                                <a class="btn btn-outline-info" href = "./leaderboard.html">Leaderboard</a>
+                            </div>`;
+                    document.getElementById('mainContainer').insertAdjacentHTML('beforeend',htmlTxt);
+                } else
+                {
+                    let htmlTxt = `
+        <div class="m-1">
+            <a class="btn btn-outline-info" href = "./profile.html">Profile</a>
+        </div>
+        <div class="m-1">
+            <a class="btn btn-outline-info" href = "./matches.html">Matches</a>
+        </div>
+        <div class="m-1">
+            <a class="btn btn-outline-info" href = "./leaderboard.html">Leaderboard</a>
+        </div>
+    `
+
+    document.getElementById('mainContainer').insertAdjacentHTML('beforeend',htmlTxt);
                 }
             })
         })();
 })
     // Regular User
-    let htmlTxt = `<div class = "options">
-    <ul>
-        <li>
-            <a class="btn" href = "./profile.html">Profile</a>
-        </li>
-        <li>
-            <a class="btn" href = "./matches.html">Matches</a>
-        </li>
-        <li>
-            <a class="btn" href = "./leaderboard.html">Leaderboard</a>
-        </li>
-    </ul>
-    </div>`
-
-    document.getElementById('mainContainer').innerHTML = htmlTxt;
+    
 }
 else
 {

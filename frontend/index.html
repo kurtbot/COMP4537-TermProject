@@ -4,16 +4,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- BOOTSTRAP CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <title>Index</title>
     <link rel = "stylesheet" href = "./css/global.css">
 </head>
 <body>
     <h2>Admin</h2>
-    <h4 id = "banner"></h4>
-    <a class="btn" id = "authStatus">Login</a>
-    <a class="btn" href="./game.html">Game</a>
-    <a class="btn" href="./reviews.html">Reviews</a>
-    <div id = "mainContainer"></div>
+    <h4 id="banner"></h4>
+    
+    
+    <div id="mainContainer">
+        <div class="m-1">
+            <a class="btn btn-outline-info" id="authStatus">Login</a>
+        </div>
+        <div class="m-1">
+            <a class="btn btn-outline-info" href="./game.html">Game</a>
+        </div>
+        <div class="m-1">
+            <a class="btn btn-outline-info" href="./reviews.html">Reviews</a>
+        </div>
+    </div>
         
     <script src = "js/index.js"></script>
 </body>

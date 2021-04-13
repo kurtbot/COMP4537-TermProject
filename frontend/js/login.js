@@ -58,5 +58,6 @@ function login() {
         emailError = document.getElementById("errorId").style.display = "block";
         document.getElementById("errorId").innerHTML = "Please enter a valid email address";
     }
+
     return false;
 }

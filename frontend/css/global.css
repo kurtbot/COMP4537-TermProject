@@ -22,14 +22,14 @@ th, td {
     padding: 1em;
 }
 
-.btn {
+/* .btn {
     background:#E3E3E3;
     border: 1px solid #000000;
     border-radius: 3px 3px 3px 3px;
     padding: 1.5px 5px 1.5px 5px;
     text-decoration: none;
     color: black;
-}
+} */
 
 a:hover {
     cursor: default;

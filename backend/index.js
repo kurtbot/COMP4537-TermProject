@@ -197,7 +197,6 @@ app.post(endPointRoot + '/user', (req, res) => {
         query = `insert into users (email, username, password) values ("${email}", "${username}", "${password}");`;
         db.query(query, (err, result) => {
             if (err) throw err;
-            ret['insertId'] = result.insertId;
             return res.status(200).json(result);
         });
     });
