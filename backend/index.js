@@ -112,10 +112,10 @@ app.get(endPointRoot + '/match', (req, res) => {
     let query;
     queryIncrement(endPointRoot + '/match', 'get').then((resp) => {
         query = `SELECT m.matchId, first.username AS user1Id, first.userId AS p1Id, second.username AS user2Id, second.userId AS p2Id, winnerUser.username AS winner, winnerUser.userId AS winnerId
-        FROM Matches m 
-        INNER JOIN Users first ON m.user1Id = first.userId 
-        INNER JOIN Users second ON m.user2Id = second.userId 
-        INNER JOIN Users winnerUser ON m.winner = winnerUser.userId GROUP BY m.matchId;`
+        FROM matches m 
+        INNER JOIN users first ON m.user1Id = first.userId 
+        INNER JOIN users second ON m.user2Id = second.userId 
+        INNER JOIN users winnerUser ON m.winner = winnerUser.userId GROUP BY m.matchId;`
         db.query(query, (err, result) => {
             if (err) throw err;
             res.status(200).json(result);
@@ -133,10 +133,10 @@ app.get(endPointRoot + '/match/:userId', (req, res) => {
             return res.status(401).json({ errors: 'Send a user id' });
         }
         query = `SELECT m.matchId, first.username AS user1Id, first.userId AS p1Id, second.username AS user2Id, second.userId AS p2Id, winnerUser.username AS winner, winnerUser.userId AS winnerId
-        FROM Matches m 
-        INNER JOIN Users first ON m.user1Id = first.userId 
-        INNER JOIN Users second ON m.user2Id = second.userId 
-        INNER JOIN Users winnerUser ON m.winner = winnerUser.userId
+        FROM matches m 
+        INNER JOIN users first ON m.user1Id = first.userId 
+        INNER JOIN users second ON m.user2Id = second.userId 
+        INNER JOIN users winnerUser ON m.winner = winnerUser.userId
         where first.userId = ${userId} or second.userId = ${userId} GROUP BY m.matchId;`
         db.query(query, (err, result) => {
             if (err) {
@@ -677,21 +677,6 @@ io.on('connection', (socket) => {
     });
 
 });
-
-const readline = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-readline.question('Who are you?', name => {
-    console.log(`Hey there ${name}!`);
-    readline.close();
-});
-
-// both clients connect sending their username which are unique to the server
-// client needs to know who their opponent is so the client can provide
-// the data for the server's other target client]
-// 
 
 http.listen(port, () => {
     console.log(`Socket.IO server running at http://localhost:${port}/`);
