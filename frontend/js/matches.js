@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let data = await result.json();
                 // TODO: status code handling
                 if (result.status == 400){
-                    document.getElementById("resp").innerHTML = JSON.stringify(data);
+                    document.getElementById("resp").innerHTML = "No matches found";
                 }
                 readMatches(data);
             })()
